@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,13 @@ import javax.validation.Valid;
  * @author yubo
  * @email 1904282367@gmail.com
  * @date 2021-12-19 15:12:30
+ *
+ *  1、nacos配置调用配置文件，修改配置文件，及时生效，需使用
+ *    RefreshScope注解
+ *  2、也可指定在nacos客户端，配置多环境配置文件，根据 Data Id（通用id） 指定配置文件
  */
 @RestController
+@RefreshScope
 @RequestMapping("coupon/coupon")
 public class CouponController {
     @Autowired

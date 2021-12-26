@@ -1,9 +1,11 @@
 package com.atguigu.gulimall.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Data;
 
@@ -56,5 +58,12 @@ public class CategoryEntity implements Serializable {
 	 * 商品数量
 	 */
 	private Integer productCount;
+
+	/**
+	 * 菜单子节点属性
+	 *   因该字段不存在与表中，所以需要使用tableField注解标识，并设置参数
+	 */
+	@TableField(exist = false)
+	private List<CategoryEntity> children;
 
 }
