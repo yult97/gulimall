@@ -6,7 +6,7 @@
     <artifactId>gulimall</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gulimall</name>
-    <description>聚合服务</description>
+    <description>谷粒商城-聚合服务</description>
     <!--打包方式-->
     <packaging>pom</packaging>
 
