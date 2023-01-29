@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>gulimall-common</artifactId>
+    <description>每个微服务公共依赖、以及 bean,工具类等</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -30,6 +31,7 @@
             <version>1.18.16</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+        <!--httpcore 请求依赖-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
