@@ -40,8 +40,7 @@ public class GulimallPoductApplicationTests {
 
         //根据编号查询品牌信息数据
         List<BrandEntity> brand_id = brandService.list(new QueryWrapper<BrandEntity>().eq("brand_Id", 2));
-        brand_id.forEach((item) -> System.out.println(item));
-
+        brand_id.forEach(item -> System.out.println(item));
 
         //更新操作
         brandEntity.setBrandId(1l);
