@@ -41,8 +41,9 @@ public class MemberController {
     @RequestMapping("/coupons")
     public R test(){
         MemberEntity memberEntity=new MemberEntity();
-        memberEntity.setNickname("张三");
-        R membercoupons = couponFeignService.membercoupons();
+        memberEntity.setNickname("林婷婷");
+        //调用优惠券服务查询优惠券信息
+        R membercoupons = couponFeignService.membercouponsList();
         return R.ok().put("member",memberEntity).put("coupons",membercoupons.get("coupons"));
     }
 

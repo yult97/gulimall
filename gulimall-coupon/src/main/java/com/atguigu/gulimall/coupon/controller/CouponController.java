@@ -1,8 +1,10 @@
 package com.atguigu.gulimall.coupon.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -66,6 +68,17 @@ public class CouponController {
         CouponEntity couponEntity=new CouponEntity();
         couponEntity.setCouponName("满100减10");
         return R.ok().put("coupons",Arrays.asList(couponEntity));
+    }
+
+    /**
+     * 查询优惠券信息
+     * @return
+     */
+    @RequestMapping("/member/coupons/list")
+    public  R membercouponsList(){
+        //查询所有优惠券信息
+        List<CouponEntity> list = couponService.list();
+        return R.ok().put("coupons",list);
     }
 
     /**
