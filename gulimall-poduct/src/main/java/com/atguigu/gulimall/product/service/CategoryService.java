@@ -18,6 +18,10 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
+    /**
+     * 查询商品所有分类，以及子类，并按照属性结构展示
+     * @return
+     */
     List<CategoryEntity> listWithTree();
 }
 

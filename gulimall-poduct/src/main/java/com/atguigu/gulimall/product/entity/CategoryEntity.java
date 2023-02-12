@@ -60,7 +60,7 @@ public class CategoryEntity implements Serializable {
 	private Integer productCount;
 
 	/**
-	 * 菜单子节点属性
+	 * 	 菜单子节点属性
 	 *   因该字段不存在与表中，所以需要使用tableField注解标识，并设置参数
 	 */
 	@TableField(exist = false)

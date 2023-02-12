@@ -32,12 +32,12 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 查出所有分类以及子类，以树形结构组装起来
+     * 查出商品菜单所有分类以及子类，以树形结构组装起来
      */
     @RequestMapping("/list/tree")
     public R list(){
-        List<CategoryEntity> categoryEntityList=categoryService.listWithTree();
-
+        //查询商品所有分类以及子类方法
+        List<CategoryEntity> categoryEntityList = categoryService.listWithTree();
         return R.ok().put("data", categoryEntityList);
     }
 
