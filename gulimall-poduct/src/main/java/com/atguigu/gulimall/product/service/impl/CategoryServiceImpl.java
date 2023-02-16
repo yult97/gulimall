@@ -44,6 +44,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<CategoryEntity> categoryEntityList = baseMapper.selectList(null);
         //在所有菜单信息中过滤父级编号为0
         //过滤完成后,将子节点过滤菜单信息放入集合中  也就是将父菜单传入进去查询子菜单
+        //菜单顺序排序,最后将集合封装返回至 List 集合中
         List<CategoryEntity> categoryList = categoryEntityList.stream().filter(CategoryEntity -> CategoryEntity.getParentCid() == 0)
                 .map((menu)-> {
                     menu.setChildren(getChildrens(menu,categoryEntityList));
@@ -64,7 +65,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * @return
      */
     private List<CategoryEntity> getChildrens(CategoryEntity root, List<CategoryEntity> all) {
-        //根据参数传递所有菜单,筛选父级菜单和
+        //根据参数传递所有菜单,筛选父级菜单下面子菜单
         List<CategoryEntity> list = all.stream().filter(categoryEntity -> categoryEntity.getParentCid().equals(root.getCatId()))
                 .map(categoryEntity -> {
                     categoryEntity.setChildren(getChildrens(categoryEntity, all));
