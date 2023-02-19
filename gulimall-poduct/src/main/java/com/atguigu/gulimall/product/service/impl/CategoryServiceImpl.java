@@ -2,6 +2,7 @@ package com.atguigu.gulimall.product.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -76,6 +77,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 })
                 .collect(Collectors.toList());
         return list;
+    }
+
+    /**
+     * 删除商品分类
+     * @param categoryId
+     */
+    @Override
+    public void deleteProduct(Long[] categoryId){
+        //todo 校验删除节点是否被引用
+        baseMapper.deleteBatchIds(Arrays.asList(categoryId));
     }
 
 }
