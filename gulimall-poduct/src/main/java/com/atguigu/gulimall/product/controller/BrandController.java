@@ -81,4 +81,13 @@ public class BrandController {
         return R.ok();
     }
 
+    /**
+     * 更新品牌显示状态
+     */
+    @RequestMapping("update/status")
+    public R status(@RequestBody BrandEntity brand){
+		brandService.updateById(brand);
+        return R.ok();
+    }
+
 }
