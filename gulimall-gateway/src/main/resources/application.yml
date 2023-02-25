@@ -20,6 +20,13 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
+        - id: thirdParty-route
+          uri: lb://gulimall-third-party  #目标url，lb代表从注册中心获取服务    此处代表会转发到 /api/third/party/** 下面信息
+          predicates:
+            - Path=/api/third/party/**      #代表匹配路径
+          filters:
+            - RewritePath=/api/third/party(?<segment>.*), /$\{segment}
+
         - id: admin-route
           uri: lb://renren-fast  #目标url，lb代表从注册中心获取服务    此处代表会转发到 renren-fast/api/** 下面信息
           predicates:
