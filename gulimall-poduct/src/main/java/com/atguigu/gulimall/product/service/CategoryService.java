@@ -30,5 +30,12 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @param categoryId
      */
     void deleteProduct(Long[] categoryId);
+
+    /**
+     * 查询属性分组全路径信息
+     * @param catelogId
+     * @return
+     */
+    Long[] findCatelogPath(Long catelogId);
 }
 
