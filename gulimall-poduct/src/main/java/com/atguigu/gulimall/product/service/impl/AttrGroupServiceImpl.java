@@ -39,23 +39,24 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
      */
     @Override
     public PageUtils queryPage(Map<String, Object> params, Long catelogId) {
+        String key = (String) params.get("key");
+        //引用MyBatis-Plus组件根据所属分类id,以及分页参数进行查询
+        QueryWrapper<AttrGroupEntity> wrapper = new QueryWrapper<AttrGroupEntity>();
+        if (!StringUtils.isEmpty(key)) {
+            wrapper.and((obj) -> {
+                obj.eq("attr_group_id", key).or().like("attr_group_name", key);
+            });
+        }
         //没有传入所属分类id,默认查询所有
         if (catelogId == 0) {
             IPage<AttrGroupEntity> page = this.page(
                     new Query<AttrGroupEntity>().getPage(params),
-                    new QueryWrapper<AttrGroupEntity>()
+                    wrapper
             );
             //将分页数据返回,解析分页条数、总条数等等
             return new PageUtils(page);
         } else {
-            String key = (String) params.get("key");
-            //引用MyBatis-Plus组件根据所属分类id,以及分页参数进行查询
-            QueryWrapper<AttrGroupEntity> wrapper = new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId);
-            if (!StringUtils.isEmpty(key)) {
-                wrapper.and((obj) -> {
-                    obj.eq("attr_group_id", key).or().like("attr_group_name", key);
-                });
-            }
+            wrapper.eq("catelog_id", catelogId);
             IPage<AttrGroupEntity> page = this.page(new Query<AttrGroupEntity>().getPage(params), wrapper);
             return new PageUtils(page);
         }

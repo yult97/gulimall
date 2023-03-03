@@ -4,10 +4,10 @@ import com.atguigu.gulimall.product.dao.BrandDao;
 import com.atguigu.gulimall.product.dao.CategoryDao;
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +41,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
     /**
      * 根据品牌id查询关联属性信息
+     *
      * @param brandId
      * @return
      */
@@ -53,6 +54,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
     /**
      * 保存关联属性信息
+     *
      * @param categoryBrandRelation
      */
     @Override
@@ -66,4 +68,26 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         this.save(categoryBrandRelation);
     }
 
+    /**
+     * 更新关联分类中分类名称信息
+     *
+     * @param catId
+     * @param name
+     */
+    @Override
+    public void updateRelation(Long catId, String name) {
+        this.baseMapper.updateRelationBrand(catId, name);
+    }
+
+    /**
+     * 根据品牌编号,品牌名称更新信息
+     *
+     * @param brandId
+     */
+    public void updateBrand(Long brandId, String name) {
+        CategoryBrandRelationEntity categoryBrandRelationEntity = new CategoryBrandRelationEntity();
+        categoryBrandRelationEntity.setBrandId(brandId);
+        categoryBrandRelationEntity.setBrandName(name);
+        this.update(categoryBrandRelationEntity, new UpdateWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId));
+    }
 }

@@ -34,5 +34,12 @@ public interface CategoryBrandRelationService extends IService<CategoryBrandRela
      * @author yubo
      */
     void saveDetail(CategoryBrandRelationEntity categoryBrandRelation);
+
+    /**
+     * 修改层级关联信息属性
+     * @param catId
+     * @param name
+     */
+    void updateRelation(Long catId, String name);
 }
 

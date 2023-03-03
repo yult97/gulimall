@@ -70,11 +70,11 @@ public class BrandController {
     }
 
     /**
-     * 修改品牌信息
+     * 修改品牌信息及同步关联关系分类名称信息
      */
     @RequestMapping("/update")
     public R update(@Validated(UpdateGroup.class) @RequestBody BrandEntity brand) {
-        brandService.updateById(brand);
+        brandService.updateDetail(brand);
 
         return R.ok();
     }

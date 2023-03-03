@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,10 +18,15 @@ import org.springframework.util.StringUtils;
 
 /**
  * 品牌管理实现类
+ *
  * @author yubo
  */
 @Service("brandService")
 public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> implements BrandService {
+
+    @Autowired
+    private CategoryBrandRelationServiceImpl categoryBrandRelationService;
+
     /**
      * 品牌管理分页查询
      *
@@ -41,6 +47,22 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
                 queryWrapper
         );
         return new PageUtils(page);
+    }
+
+    /**
+     * 属性信息关联关系修改
+     *
+     * @param brand
+     */
+    @Override
+    public void updateDetail(BrandEntity brand) {
+        //更新品牌管理品牌名称信息
+        this.updateById(brand);
+        //判断品牌管理名称是否为空
+        if (!StringUtils.isEmpty(brand.getName())) {
+            categoryBrandRelationService.updateBrand(brand.getBrandId(),brand.getName());
+            //TODO 更新相关属性表关系
+        }
     }
 
 }
