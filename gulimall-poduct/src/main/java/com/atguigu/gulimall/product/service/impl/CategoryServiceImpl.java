@@ -113,6 +113,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return catelogPaths.toArray(new Long[0]);
     }
 
+    /**
+     * 更新分类维护信息及关联属性信息
+     * @param category
+     */
     @Override
     public void updateCascade(CategoryEntity category) {
         //更新级联属性信息

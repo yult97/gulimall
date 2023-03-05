@@ -31,16 +31,18 @@ public class CategoryBrandRelationController {
      * 列表
      * 总结  @RequestParam 和 @PathVariable 区别
      * 以及 GetMapping 注解中拼接路径参数
+     *
      * @author yubo
      */
     @GetMapping("/catelog/list")
-    public R categorylist(@RequestParam("brandId")Long brandId) {
+    public R categorylist(@RequestParam("brandId") Long brandId) {
         List<CategoryBrandRelationEntity> categoryBrandRelationEntityList = categoryBrandRelationService.selectDetail(brandId);
 
         //List<CategoryBrandRelationEntity> brand_id = categoryBrandRelationService.list(new QueryWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId));
 
         return R.ok().put("data", categoryBrandRelationEntityList);
     }
+
     /**
      * 列表
      */
@@ -68,8 +70,6 @@ public class CategoryBrandRelationController {
     @RequestMapping("/save")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation) {
         categoryBrandRelationService.saveDetail(categoryBrandRelation);
-        //categoryBrandRelationService.save(categoryBrandRelation);
-
         return R.ok();
     }
 
