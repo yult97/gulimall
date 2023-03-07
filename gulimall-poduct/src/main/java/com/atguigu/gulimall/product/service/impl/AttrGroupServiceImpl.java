@@ -1,8 +1,20 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.common.utils.R;
+import com.atguigu.gulimall.product.dao.AttrAttrgroupRelationDao;
+import com.atguigu.gulimall.product.dao.AttrDao;
+import com.atguigu.gulimall.product.entity.AttrAttrgroupRelationEntity;
+import com.atguigu.gulimall.product.entity.AttrEntity;
+import com.atguigu.gulimall.product.vo.AttrRelationVO;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,10 +26,18 @@ import com.atguigu.gulimall.product.dao.AttrGroupDao;
 import com.atguigu.gulimall.product.entity.AttrGroupEntity;
 import com.atguigu.gulimall.product.service.AttrGroupService;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-
+@Slf4j
 @Service("attrGroupService")
 public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEntity> implements AttrGroupService {
+
+    @Autowired
+    private AttrAttrgroupRelationDao attrAttrgroupRelationDao;
+
+    @Autowired
+    private AttrDao attrDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -61,5 +81,59 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return new PageUtils(page);
         }
     }
+
+    @Override
+    public PageUtils queryGroupRelation(Map<String, Object> params, Long attrGroupId) {
+//        //根据属性分组编号查询属性和属性分组关联关系表
+//        List<AttrAttrgroupRelationEntity> attrgroupRelationEntity = attrAttrgroupRelationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", attrGroupId));
+//        log.info("===属性关联参数信息{}====", attrgroupRelationEntity);
+//        List<Long> attrIds = attrgroupRelationEntity.stream().map((attr) -> {
+//            return attr.getAttrId();
+//        }).collect(Collectors.toList());
+//
+////        List<AttrEntity> attrEntity = attrDao.selectList(new QueryWrapper<AttrEntity>().in("attr_id", attrIds));
+//        QueryWrapper queryWrapper = new QueryWrapper<AttrEntity>().eq("",);
+//        if (attrIds != null || attrIds.size() > 0) {
+//            queryWrapper.in(attrIds);
+//        }
+//        //IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), queryWrapper);
+        IPage<AttrEntity> page = null;
+        return new PageUtils(page);
+    }
+
+    /**
+     * 根据属性分组编号获取属性分组的关联的所有属性
+     *
+     * @param attrgroupId
+     * @return
+     */
+    @Override
+    public List<AttrEntity> attrGroupRelation(Long attrgroupId) {
+        //根据属性分组编号查询关联关系表信息
+        List<AttrAttrgroupRelationEntity> attrgroupRelationEntityList = attrAttrgroupRelationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", attrgroupId));
+        log.info("属性分组关联属性信息为{}", attrgroupRelationEntityList);
+        //判断查询结果是否为空
+        if (attrgroupRelationEntityList.size() > 0 || attrgroupRelationEntityList != null) {
+            List<Long> collect = attrgroupRelationEntityList.stream().map((attr) -> {
+                return attr.getAttrId();
+            }).collect(Collectors.toList());
+            List<AttrEntity> attrList = attrDao.selectList(new QueryWrapper<AttrEntity>().in("attr_id", collect));
+            return attrList;
+        }
+        return null;
+    }
+
+    @Override
+    public void relationDelete(AttrRelationVO[] attrRelationVOS) {
+        List<AttrAttrgroupRelationEntity> attrRelationList = Arrays.asList(attrRelationVOS).stream().map((attrRelationVO) -> {
+            //此步骤原因是调用 AttrAttrgroupRelationDao 编写mapper文件,继承实体类为属性关联关系实体类
+            AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+            BeanUtils.copyProperties(attrRelationVO, attrAttrgroupRelationEntity);
+            return attrAttrgroupRelationEntity;
+        }).collect(Collectors.toList());
+        attrAttrgroupRelationDao.deletBatchList(attrRelationList);
+
+    }
+
 
 }

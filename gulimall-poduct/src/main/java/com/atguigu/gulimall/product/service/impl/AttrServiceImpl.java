@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.common.enums.PrizeAttrType;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.common.utils.Query;
 import com.atguigu.gulimall.product.dao.AttrAttrgroupRelationDao;
@@ -8,19 +9,15 @@ import com.atguigu.gulimall.product.dao.CategoryDao;
 import com.atguigu.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.atguigu.gulimall.product.entity.AttrGroupEntity;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
-import com.atguigu.gulimall.product.service.AttrAttrgroupRelationService;
 import com.atguigu.gulimall.product.service.CategoryService;
 import com.atguigu.gulimall.product.vo.AttrRspVO;
 import com.atguigu.gulimall.product.vo.AttrVO;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.el.stream.Stream;
-import org.bouncycastle.util.Arrays;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,9 +29,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.gulimall.product.dao.AttrDao;
 import com.atguigu.gulimall.product.entity.AttrEntity;
 import com.atguigu.gulimall.product.service.AttrService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-
+/**
+ * 属性实现类
+ *
+ * @author yubo
+ */
 @Service("attrService")
 @Slf4j
 public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements AttrService {
@@ -72,14 +74,16 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
      *
      * @param params
      * @param catelogId
+     * @param type
      * @return
      */
     @Override
-    public PageUtils queryPageAttr(Map<String, Object> params, Long catelogId) {
-        log.info("==================商品属性查询================");
+    public PageUtils queryPageAttr(Map<String, Object> params, Long catelogId, String type) {
+        log.info("==================商品属性查询信息{},类型设置{}================", catelogId, type);
         //获取参数值
         String key = (String) params.get("key");
-        QueryWrapper<AttrEntity> attrEntityQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<AttrEntity> attrEntityQueryWrapper = new QueryWrapper<AttrEntity>()
+                .eq("attr_type", type.equalsIgnoreCase(PrizeAttrType.BaseType.getTypeName()) ? PrizeAttrType.BaseType.getCode() : PrizeAttrType.SaleType.getCode());
         if (catelogId != 0) {
             attrEntityQueryWrapper.eq("catelog_Id", catelogId);
         }
@@ -96,16 +100,19 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         List<AttrRspVO> list = records.stream().map((attrEntiy) -> {
             AttrRspVO attrRspVO = new AttrRspVO();
             BeanUtils.copyProperties(attrEntiy, attrRspVO);
-
-            AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = attrAttrgroupRelationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntiy.getAttrId()));
-            log.info("属性关联信息{}", attrAttrgroupRelationEntity);
-            if (!StringUtils.isEmpty(attrAttrgroupRelationEntity)) {
-                //根据商品属性id查询属性信息,使用关联表中分组id进行查询
-                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrAttrgroupRelationEntity.getAttrGroupId());
-                log.info("获取{}商品属性信息{}", attrEntiy.getAttrId(), attrGroupEntity);
-                if (!StringUtils.isEmpty(attrGroupEntity)) {
-                    attrRspVO.setAttrGroupName(attrGroupEntity.getAttrGroupName());
+            //判断属性类型是否为基础属性类型，只有基础属性类型才会存储
+            if (type.equalsIgnoreCase(PrizeAttrType.BaseType.getTypeName())) {
+                AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = attrAttrgroupRelationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntiy.getAttrId()));
+                log.info("属性关联信息{}", attrAttrgroupRelationEntity);
+                if (!StringUtils.isEmpty(attrAttrgroupRelationEntity)) {
+                    //根据商品属性id查询属性信息,使用关联表中分组id进行查询
+                    AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrAttrgroupRelationEntity.getAttrGroupId());
+                    log.info("获取{}商品属性信息{}", attrEntiy.getAttrId(), attrGroupEntity);
+                    if (!StringUtils.isEmpty(attrGroupEntity)) {
+                        attrRspVO.setAttrGroupName(attrGroupEntity.getAttrGroupName());
+                    }
                 }
+
             }
             //根据分类id查询分类信息
             CategoryEntity categoryEntity = categoryDao.selectById(attrEntiy.getCatelogId());
@@ -130,12 +137,16 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         //将属性信息值赋值给属性信息实体类
         BeanUtils.copyProperties(attr, attrEntity);
         this.save(attrEntity);
-        AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
-        //赋值属性id 为分组维护中编号
-        attrAttrgroupRelationEntity.setAttrId(attrEntity.getAttrId());
-        //赋值属性分组id 为分组关联表分组id
-        attrAttrgroupRelationEntity.setAttrGroupId(attr.getAttrGroupId());
-        attrAttrgroupRelationService.save(attrAttrgroupRelationEntity);
+        //基础属性信息时,才会存储属性分组和属性关联表
+        if (attr.getAttrType().equals(PrizeAttrType.BaseType.getTypeName())) {
+            AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+            //赋值属性id 为分组维护中编号
+            attrAttrgroupRelationEntity.setAttrId(attrEntity.getAttrId());
+            //赋值属性分组id 为分组关联表分组id
+            attrAttrgroupRelationEntity.setAttrGroupId(attr.getAttrGroupId());
+            attrAttrgroupRelationService.save(attrAttrgroupRelationEntity);
+        }
+
 
     }
 
@@ -183,23 +194,27 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
      * @param attr
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateAttr(AttrVO attr) {
         AttrEntity attrEntity = new AttrEntity();
         BeanUtils.copyProperties(attr, attrEntity);
         //将基本属性值进行更新
         this.updateById(attrEntity);
-        //修改规则参数属性关联值
-        AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
-        //赋值最新规格参数分组值
-        attrAttrgroupRelationEntity.setAttrGroupId(attr.getAttrGroupId());
-        //赋值最新属性分组值
-        attrAttrgroupRelationEntity.setAttrId(attr.getAttrId());
-        //查询规则参数属性是否存在关联值
-        int count = attrAttrgroupRelationDao.selectCount(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
-        if (count > 0) {
-            attrAttrgroupRelationDao.update(attrAttrgroupRelationEntity, new UpdateWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
-        } else {
-            attrAttrgroupRelationDao.insert(attrAttrgroupRelationEntity);
+        //基础属性信息时,才会存储属性分组和属性关联表
+        if (attr.getAttrType().equals(PrizeAttrType.BaseType.getTypeName())) {
+            //修改规则参数属性关联值
+            AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+            //赋值最新规格参数分组值
+            attrAttrgroupRelationEntity.setAttrGroupId(attr.getAttrGroupId());
+            //赋值最新属性分组值
+            attrAttrgroupRelationEntity.setAttrId(attr.getAttrId());
+            //查询规则参数属性是否存在关联值
+            int count = attrAttrgroupRelationDao.selectCount(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
+            if (count > 0) {
+                attrAttrgroupRelationDao.update(attrAttrgroupRelationEntity, new UpdateWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
+            } else {
+                attrAttrgroupRelationDao.insert(attrAttrgroupRelationEntity);
+            }
         }
 
     }

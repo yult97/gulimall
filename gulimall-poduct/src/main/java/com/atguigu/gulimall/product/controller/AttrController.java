@@ -94,9 +94,9 @@ public class AttrController {
      * @RequestBody // 传递json格式数据接收
      * @PathVariable 之间区别
      */
-    @GetMapping("/base/list/{catelogId}")
-    public R attributeList(@PathVariable("catelogId") Long catelogId, @RequestParam Map<String, Object> params) {
-        PageUtils page = attrService.queryPageAttr(params, catelogId);
+    @GetMapping("/{attrType}/list/{catelogId}")
+    public R attributeList(@PathVariable("catelogId") Long catelogId, @RequestParam Map<String, Object> params,@PathVariable("attrType") String type) {
+        PageUtils page = attrService.queryPageAttr(params, catelogId,type);
         return R.ok().put("page", page);
     }
 

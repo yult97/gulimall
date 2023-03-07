@@ -1,9 +1,12 @@
 package com.atguigu.gulimall.product.service;
 
 import com.atguigu.common.utils.PageUtils;
+import com.atguigu.gulimall.product.entity.AttrEntity;
+import com.atguigu.gulimall.product.vo.AttrRelationVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.gulimall.product.entity.AttrGroupEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +28,27 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      * @return
      */
     PageUtils queryPage(Map<String, Object> params, Long attrGroupId);
+
+    /**
+     * 新增关联属性查询
+     *
+     * @param params
+     * @param attrGroupId
+     */
+    PageUtils queryGroupRelation(Map<String, Object> params, Long attrGroupId);
+
+    /**
+     * 根据属性分组编号获取属性分组的关联的所有属性
+     *
+     * @param attrgroupId
+     * @return
+     */
+    List<AttrEntity> attrGroupRelation(Long attrgroupId);
+
+    /**
+     *
+     * @param attrRelationVOS
+     */
+    void relationDelete(AttrRelationVO[] attrRelationVOS);
 }
 
