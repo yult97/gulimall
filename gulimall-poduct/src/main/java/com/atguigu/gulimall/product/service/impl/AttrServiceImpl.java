@@ -219,4 +219,43 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     }
 
+    /**
+     * 查询属性分组关联关系
+     *
+     * @param params
+     * @param attrGroupId
+     * @return
+     */
+    @Override
+    public PageUtils queryGroupRelation(Map<String, Object> params, Long attrGroupId) {
+        //获取属性分组信息
+        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrGroupId);
+        log.info("查询属性分组信息为{}", attrGroupEntity);
+        Long catelogId = attrGroupEntity.getCatelogId();
+        log.info("获取属性分组中分类编码{}", catelogId);
+        //根据分类id获取属性分组信息
+        List<AttrGroupEntity> attrEntityList = attrGroupDao.selectList(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
+        log.info("查询属性信息为{}", attrEntityList);
+        List<Long> list = attrEntityList.stream().map((attrGroup) -> {
+            return attrGroup.getAttrGroupId();
+        }).collect(Collectors.toList());
+        List<AttrAttrgroupRelationEntity> attrgroupRelationEntityList = attrAttrgroupRelationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().in("attr_group_id", list));
+        List<Long> attrIds = attrgroupRelationEntityList.stream().map((attrRel) -> {
+            return attrRel.getAttrId();
+        }).collect(Collectors.toList());
+        QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>().eq("catelog_id", catelogId).eq("attr_type", PrizeAttrType.BaseType.getCode());
+        if (attrIds.size() > 0) {
+            queryWrapper.notIn("attr_id", attrIds);
+        }
+        //判断是否有参数进行模糊查询
+        String key = (String) params.get("key");
+        if (!StringUtils.isEmpty(key)) {
+            queryWrapper.and((w) -> {
+                w.eq("attr_id", key).or().like("attr_name", key);
+            });
+        }
+        IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), queryWrapper);
+        return new PageUtils(page);
+    }
+
 }

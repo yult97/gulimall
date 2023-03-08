@@ -95,9 +95,26 @@ public class AttrController {
      * @PathVariable 之间区别
      */
     @GetMapping("/{attrType}/list/{catelogId}")
-    public R attributeList(@PathVariable("catelogId") Long catelogId, @RequestParam Map<String, Object> params,@PathVariable("attrType") String type) {
-        PageUtils page = attrService.queryPageAttr(params, catelogId,type);
+    public R attributeList(@PathVariable("catelogId") Long catelogId, @RequestParam Map<String, Object> params, @PathVariable("attrType") String type) {
+        PageUtils page = attrService.queryPageAttr(params, catelogId, type);
         return R.ok().put("page", page);
+    }
+
+
+    /**
+     * 属性分组分页查询
+     *
+     * @param params
+     * @param attrGroupId
+     * @return
+     * @author yubo
+     */
+    @RequestMapping("{attrGroupId}/noattr/relation")
+    public R groupRelation(@RequestParam Map<String, Object> params, @PathVariable("attrGroupId") Long attrGroupId) {
+
+        PageUtils pageUtils = attrService.queryGroupRelation(params, attrGroupId);
+
+        return R.ok().put("page", pageUtils);
     }
 
 }

@@ -29,13 +29,6 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      */
     PageUtils queryPage(Map<String, Object> params, Long attrGroupId);
 
-    /**
-     * 新增关联属性查询
-     *
-     * @param params
-     * @param attrGroupId
-     */
-    PageUtils queryGroupRelation(Map<String, Object> params, Long attrGroupId);
 
     /**
      * 根据属性分组编号获取属性分组的关联的所有属性
@@ -46,9 +39,19 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
     List<AttrEntity> attrGroupRelation(Long attrgroupId);
 
     /**
+     * 删除属性关联关系
      *
      * @param attrRelationVOS
+     * @date 2023/03/07
      */
     void relationDelete(AttrRelationVO[] attrRelationVOS);
+
+//    /**
+//     * 批量保存商品关联关系
+//     *
+//     * @param attrRelationVOS
+//     * @date 2023/03/08
+//     */
+//    void saveBatchRelation(List<AttrRelationVO> attrRelationVOS);
 }
 

@@ -6,6 +6,7 @@ import com.atguigu.gulimall.product.dao.AttrDao;
 import com.atguigu.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.atguigu.gulimall.product.entity.AttrEntity;
 import com.atguigu.gulimall.product.vo.AttrRelationVO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Autowired
     private AttrDao attrDao;
+
+    @Autowired
+    private AttrGroupDao attrGroupDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -82,25 +86,6 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         }
     }
 
-    @Override
-    public PageUtils queryGroupRelation(Map<String, Object> params, Long attrGroupId) {
-//        //根据属性分组编号查询属性和属性分组关联关系表
-//        List<AttrAttrgroupRelationEntity> attrgroupRelationEntity = attrAttrgroupRelationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", attrGroupId));
-//        log.info("===属性关联参数信息{}====", attrgroupRelationEntity);
-//        List<Long> attrIds = attrgroupRelationEntity.stream().map((attr) -> {
-//            return attr.getAttrId();
-//        }).collect(Collectors.toList());
-//
-////        List<AttrEntity> attrEntity = attrDao.selectList(new QueryWrapper<AttrEntity>().in("attr_id", attrIds));
-//        QueryWrapper queryWrapper = new QueryWrapper<AttrEntity>().eq("",);
-//        if (attrIds != null || attrIds.size() > 0) {
-//            queryWrapper.in(attrIds);
-//        }
-//        //IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), queryWrapper);
-        IPage<AttrEntity> page = null;
-        return new PageUtils(page);
-    }
-
     /**
      * 根据属性分组编号获取属性分组的关联的所有属性
      *
@@ -113,7 +98,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         List<AttrAttrgroupRelationEntity> attrgroupRelationEntityList = attrAttrgroupRelationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", attrgroupId));
         log.info("属性分组关联属性信息为{}", attrgroupRelationEntityList);
         //判断查询结果是否为空
-        if (attrgroupRelationEntityList.size() > 0 || attrgroupRelationEntityList != null) {
+        if (attrgroupRelationEntityList.size() > 0) {
             List<Long> collect = attrgroupRelationEntityList.stream().map((attr) -> {
                 return attr.getAttrId();
             }).collect(Collectors.toList());
@@ -123,6 +108,11 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         return null;
     }
 
+    /**
+     * 移除关联属性实现
+     *
+     * @param attrRelationVOS
+     */
     @Override
     public void relationDelete(AttrRelationVO[] attrRelationVOS) {
         List<AttrAttrgroupRelationEntity> attrRelationList = Arrays.asList(attrRelationVOS).stream().map((attrRelationVO) -> {
@@ -134,6 +124,8 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         attrAttrgroupRelationDao.deletBatchList(attrRelationList);
 
     }
+
+
 
 
 }

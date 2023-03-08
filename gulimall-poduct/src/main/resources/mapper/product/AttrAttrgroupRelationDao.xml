@@ -12,6 +12,7 @@
         <result property="attrSort" column="attr_sort"/>
     </resultMap>
 
+    <!--移除属性分组关联属性信息-->
     <delete id="deletBatchList">
         delete from pms_attr_attrgroup_relation where
         <foreach collection="attrRelationList" item="item" separator=" OR ">

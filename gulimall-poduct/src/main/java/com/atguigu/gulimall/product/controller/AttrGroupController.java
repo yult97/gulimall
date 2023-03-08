@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.atguigu.gulimall.product.entity.AttrEntity;
+import com.atguigu.gulimall.product.service.AttrAttrgroupRelationService;
 import com.atguigu.gulimall.product.service.CategoryService;
 import com.atguigu.gulimall.product.vo.AttrRelationVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class AttrGroupController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
 
     /**
      * 属性分组分页查询
@@ -97,36 +101,39 @@ public class AttrGroupController {
         return R.ok();
     }
 
-    /**
-     * 属性分组分页查询
-     *
-     * @param params
-     * @param attrGroupId
-     * @return
-     * @author yubo
-     */
-    @RequestMapping("{attrGroupId}/noattr/relation")
-    public R groupRelation(@RequestParam Map<String, Object> params, @PathVariable("attrGroupId") Long attrGroupId) {
-
-        PageUtils pageUtils = attrGroupService.queryGroupRelation(params, attrGroupId);
-
-        return R.ok();
-    }
 
     /**
      * 根据属性分组编号获取属性分组的关联的所有属性
+     *
      * @param attrgroupId
      * @return
      */
     @GetMapping("{attrgroupId}/attr/relation")
     public R attrGroupRelation(@PathVariable("attrgroupId") Long attrgroupId) {
-        List<AttrEntity> attrGroupList=attrGroupService.attrGroupRelation(attrgroupId);
-        return R.ok().put("data",attrGroupList);
+        List<AttrEntity> attrGroupList = attrGroupService.attrGroupRelation(attrgroupId);
+        return R.ok().put("data", attrGroupList);
     }
 
+    /**
+     * 删除属性关联关系
+     *
+     * @param attrRelationVOS
+     * @return
+     */
     @PostMapping("/attr/relation/delete")
     public R relationDelete(@RequestBody AttrRelationVO[] attrRelationVOS) {
         attrGroupService.relationDelete(attrRelationVOS);
+        return R.ok();
+    }
+
+    /**
+     * 批量保存属性维护关联关系
+     * @param attrRelationVOS
+     * @return
+     */
+    @RequestMapping("/attr/relation")
+    public R saveBatch(@RequestBody List<AttrRelationVO> attrRelationVOS) {
+        attrAttrgroupRelationService.saveBatchRelation(attrRelationVOS);
         return R.ok();
     }
 

@@ -50,5 +50,13 @@ public interface AttrService extends IService<AttrEntity> {
      * @param attr
      */
     void updateAttr(AttrVO attr);
+
+    /**
+     * 新增关联属性查询
+     *
+     * @param params
+     * @param attrGroupId
+     */
+    PageUtils queryGroupRelation(Map<String, Object> params, Long attrGroupId);
 }
 

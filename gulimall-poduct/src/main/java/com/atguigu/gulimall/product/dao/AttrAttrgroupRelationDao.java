@@ -16,6 +16,10 @@ import java.util.List;
  */
 @Mapper
 public interface AttrAttrgroupRelationDao extends BaseMapper<AttrAttrgroupRelationEntity> {
-
+    /**
+     * 移除属性分组关联属性信息
+     *
+     * @param attrRelationList
+     */
     void deletBatchList(@Param("attrRelationList") List<AttrAttrgroupRelationEntity> attrRelationList);
 }
