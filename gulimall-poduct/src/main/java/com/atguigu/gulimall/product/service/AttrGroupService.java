@@ -46,12 +46,5 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      */
     void relationDelete(AttrRelationVO[] attrRelationVOS);
 
-//    /**
-//     * 批量保存商品关联关系
-//     *
-//     * @param attrRelationVOS
-//     * @date 2023/03/08
-//     */
-//    void saveBatchRelation(List<AttrRelationVO> attrRelationVOS);
 }
 

@@ -27,8 +27,6 @@ import com.atguigu.gulimall.product.dao.AttrGroupDao;
 import com.atguigu.gulimall.product.entity.AttrGroupEntity;
 import com.atguigu.gulimall.product.service.AttrGroupService;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
 @Service("attrGroupService")
@@ -42,6 +40,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Autowired
     private AttrGroupDao attrGroupDao;
+
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -124,8 +123,6 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         attrAttrgroupRelationDao.deletBatchList(attrRelationList);
 
     }
-
-
 
 
 }

@@ -4,12 +4,15 @@ import com.atguigu.gulimall.product.dao.BrandDao;
 import com.atguigu.gulimall.product.dao.CategoryDao;
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
+import com.atguigu.gulimall.product.service.BrandService;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -23,11 +26,14 @@ import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
 
 
 @Service("categoryBrandRelationService")
+@Slf4j
 public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandRelationDao, CategoryBrandRelationEntity> implements CategoryBrandRelationService {
     @Autowired
     CategoryDao categoryDao;
     @Autowired
     BrandDao brandDao;
+    @Autowired
+    BrandService brandService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -77,6 +83,27 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     @Override
     public void updateRelation(Long catId, String name) {
         this.baseMapper.updateRelationBrand(catId, name);
+    }
+
+
+    /**
+     * @return
+     * @throws
+     * @title
+     * @description 根据分类id查询品牌信息
+     * @author yubo
+     * @updateTime 2023-03-09 22:12
+     */
+    @Override
+    public List<BrandEntity> selectBrandsList(long catId) {
+        List<CategoryBrandRelationEntity> categoryBrandRelationEntityList = this.baseMapper.selectList(new QueryWrapper<CategoryBrandRelationEntity>().eq("catelog_id", catId));
+        log.info("查询商品分类关联信息{}", categoryBrandRelationEntityList);
+        List<BrandEntity> cateIds = categoryBrandRelationEntityList.stream().map(item -> {
+            Long brandId = item.getBrandId();
+            BrandEntity brandEntity = brandService.getById(brandId);
+            return brandEntity;
+        }).collect(Collectors.toList());
+        return cateIds;
     }
 
     /**

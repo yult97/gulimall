@@ -1,6 +1,7 @@
 package com.atguigu.gulimall.product.service;
 
 import com.atguigu.common.utils.PageUtils;
+import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.gulimall.product.entity.CategoryBrandRelationEntity;
 
@@ -37,9 +38,20 @@ public interface CategoryBrandRelationService extends IService<CategoryBrandRela
 
     /**
      * 修改层级关联信息属性
+     *
      * @param catId
      * @param name
      */
     void updateRelation(Long catId, String name);
+
+    /**
+     * @return
+     * @throws
+     * @title
+     * @description 根据分类id查询品牌信息
+     * @author yubo
+     * @updateTime 2023-03-09 22:12
+     */
+    List<BrandEntity> selectBrandsList(long catId);
 }
 

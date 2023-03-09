@@ -3,15 +3,15 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: test_route
-          uri: https://www.baidu.com
-          predicates:
-            - Query=url,baidu
-
-        - id: qq_route
-          uri: https://www.qq.com
-          predicates:
-            - Query=url,qq
+        #        - id: test_route
+        #          uri: https://www.baidu.com
+        #          predicates:
+        #            - Query=url,baidu
+        #
+        #        - id: qq_route
+        #          uri: https://www.qq.com
+        #          predicates:
+        #            - Query=url,qq
 
         - id: poduct-route
           uri: lb://gulimall-poduct  #目标url，lb代表从注册中心获取服务    此处代表会转发到 /api/poduct/** 下面信息
@@ -27,9 +27,18 @@ spring:
           filters:
             - RewritePath=/api/third/party(?<segment>.*), /$\{segment}
 
+        - id: member-route
+          uri: lb://gulimall-member #目标url，lb代表从注册中心获取服务    此处代表会转发到 /api/memeber/** 下面信息
+          predicates:
+            - Path=/api/member/**      #代表匹配路径
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
         - id: admin-route
           uri: lb://renren-fast  #目标url，lb代表从注册中心获取服务    此处代表会转发到 renren-fast/api/** 下面信息
           predicates:
             - Path=/api/**      #代表匹配路径
           filters:
             - RewritePath=/api/(?<segment>.*), /renren-fast/$\{segment}
+
+
