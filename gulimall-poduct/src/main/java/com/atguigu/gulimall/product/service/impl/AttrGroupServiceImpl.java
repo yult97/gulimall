@@ -5,7 +5,9 @@ import com.atguigu.gulimall.product.dao.AttrAttrgroupRelationDao;
 import com.atguigu.gulimall.product.dao.AttrDao;
 import com.atguigu.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.atguigu.gulimall.product.entity.AttrEntity;
+import com.atguigu.gulimall.product.service.AttrService;
 import com.atguigu.gulimall.product.vo.AttrRelationVO;
+import com.atguigu.gulimall.product.vo.AttrWithGroupVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +42,9 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Autowired
     private AttrGroupDao attrGroupDao;
+
+    @Autowired
+    private AttrGroupService attrGroupService;
 
 
     @Override
@@ -122,6 +127,30 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         }).collect(Collectors.toList());
         attrAttrgroupRelationDao.deletBatchList(attrRelationList);
 
+    }
+
+    /**
+     * @throws
+     * @title getAttrGroupWithAttrsByCatelogId
+     * @description 根据分类id查询商品分类及关联属性信息
+     * @author yubo
+     * @updateTime 2023-03-12 19:33
+     * @Return java.util.List<com.atguigu.gulimall.product.vo.AttrWithGroupVO>
+     * @Param [catelogId]
+     */
+    @Override
+    public List<AttrWithGroupVO> getAttrGroupWithAttrsByCatelogId(long catelogId) {
+        //根据分类id查询属性分组关联信息
+        List<AttrGroupEntity> attrGroupEntityList = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
+        log.info("获取属性分组关联信息{}", attrGroupEntityList);
+        List<AttrWithGroupVO> withGroupVOS = attrGroupEntityList.stream().map(attrGroup -> {
+            AttrWithGroupVO attrWithGroupVO = new AttrWithGroupVO();
+            BeanUtils.copyProperties(attrGroup, attrWithGroupVO);
+            List<AttrEntity> attrsList = attrGroupService.attrGroupRelation(attrGroup.getAttrGroupId());
+            attrWithGroupVO.setAttrs(attrsList);
+            return attrWithGroupVO;
+        }).collect(Collectors.toList());
+        return withGroupVOS;
     }
 
 

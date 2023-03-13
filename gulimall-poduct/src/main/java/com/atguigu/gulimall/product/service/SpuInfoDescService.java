@@ -1,6 +1,7 @@
 package com.atguigu.gulimall.product.service;
 
 import com.atguigu.common.utils.PageUtils;
+import com.atguigu.gulimall.product.entity.SkuInfoEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.gulimall.product.entity.SpuInfoDescEntity;
 
@@ -16,5 +17,17 @@ import java.util.Map;
 public interface SpuInfoDescService extends IService<SpuInfoDescEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * @throws
+     * @title saveDesc
+     * @description TODO
+     * @author yubo
+     * @updateTime 2023-03-12 23:42
+     * @Return void
+     * @Param [spuInfoDescEntity]
+     */
+    void saveDesc(SpuInfoDescEntity spuInfoDescEntity);
+
 }
 

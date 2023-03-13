@@ -1,7 +1,10 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.gulimall.product.entity.SkuInfoEntity;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,5 +28,21 @@ public class SpuInfoDescServiceImpl extends ServiceImpl<SpuInfoDescDao, SpuInfoD
 
         return new PageUtils(page);
     }
+
+    /**
+     * @throws
+     * @title saveDesc
+     * @description TODO
+     * @author yubo
+     * @updateTime 2023-03-12 23:43
+     * @Return void
+     * @Param [spuInfoDescEntity]
+     */
+    @Override
+    public void saveDesc(SpuInfoDescEntity spuInfoDescEntity) {
+        this.save(spuInfoDescEntity);
+    }
+
+
 
 }

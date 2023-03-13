@@ -3,6 +3,7 @@ package com.atguigu.gulimall.product.service;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.gulimall.product.entity.AttrEntity;
 import com.atguigu.gulimall.product.vo.AttrRelationVO;
+import com.atguigu.gulimall.product.vo.AttrWithGroupVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.gulimall.product.entity.AttrGroupEntity;
 
@@ -46,5 +47,15 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      */
     void relationDelete(AttrRelationVO[] attrRelationVOS);
 
+    /**
+     * @throws
+     * @title getAttrGroupWithAttrsByCatelogId
+     * @description 根据分类id查询商品分类及关联属性信息
+     * @author yubo
+     * @updateTime 2023-03-12 19:33
+     * @Return java.util.List<com.atguigu.gulimall.product.vo.AttrWithGroupVO>
+     * @Param [catelogId]
+     */
+    List<AttrWithGroupVO> getAttrGroupWithAttrsByCatelogId(long catelogId);
 }
 

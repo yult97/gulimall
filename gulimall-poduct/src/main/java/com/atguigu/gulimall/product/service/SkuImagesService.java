@@ -4,6 +4,7 @@ import com.atguigu.common.utils.PageUtils;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.gulimall.product.entity.SkuImagesEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,16 @@ import java.util.Map;
 public interface SkuImagesService extends IService<SkuImagesEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * @throws
+     * @title saveSkuImages
+     * @description 保存sku图片信息
+     * @author yubo
+     * @updateTime 2023-03-13 21:37
+     * @Return void
+     * @Param [skuImagesEntities]
+     */
+    void saveSkuImages(List<SkuImagesEntity> skuImagesEntities);
 }
 

@@ -8,6 +8,7 @@ import com.atguigu.gulimall.product.entity.AttrEntity;
 import com.atguigu.gulimall.product.service.AttrAttrgroupRelationService;
 import com.atguigu.gulimall.product.service.CategoryService;
 import com.atguigu.gulimall.product.vo.AttrRelationVO;
+import com.atguigu.gulimall.product.vo.AttrWithGroupVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -128,6 +129,7 @@ public class AttrGroupController {
 
     /**
      * 批量保存属性维护关联关系
+     *
      * @param attrRelationVOS
      * @return
      */
@@ -135,6 +137,21 @@ public class AttrGroupController {
     public R saveBatch(@RequestBody List<AttrRelationVO> attrRelationVOS) {
         attrAttrgroupRelationService.saveBatchRelation(attrRelationVOS);
         return R.ok();
+    }
+
+    /**
+     * @throws
+     * @title getAttrGroupWithAttrsByCatelogId
+     * @description 根据分类id查询商品分类及关联属性信息
+     * @author yubo
+     * @updateTime 2023-03-12 19:33
+     * @Return java.util.List<com.atguigu.gulimall.product.vo.AttrWithGroupVO>
+     * @Param [catelogId]
+     */
+    @GetMapping("/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId") long catelogId) {
+        List<AttrWithGroupVO> attrsList = attrGroupService.getAttrGroupWithAttrsByCatelogId(catelogId);
+        return R.ok().put("data", attrsList);
     }
 
 }
